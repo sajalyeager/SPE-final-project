@@ -109,7 +109,7 @@ class  Welcome extends React.Component{
     if( x === true || y === true){
         if(x === true){
              this.user();
-             if(this.state.sp=== false){
+             if(this.state.sp=== true){
                return <Pay contract= {this.state.contract} account ={this.state.currentAccount}/>}
               else {
                 return <DisplayServiceProviders Account = {this.state.currentAccount}  Contract={this.state.contract}/>}}
