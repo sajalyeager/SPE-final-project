@@ -6,6 +6,7 @@ import ModelABI from './contracts/Model.json';
 import RegisterScreen from "./components/RegisterScreen";
 import DisplayServiceProviders from "./components/DisplayServiceProviders";
 import Pay from "./components/Payement";
+import Servp from "./components/providerscreen"
 
 
 class  Welcome extends React.Component{
@@ -91,12 +92,9 @@ class  Welcome extends React.Component{
              let v= false;
              
         await this.state.contract.methods.Users(this.state.currentAccount).call()
-          .then(function(result){
-           v= result[8];
-        
-        
-        
-          });
+        .then(function (result){
+            v = result[8];
+        });
           this.setState({sp :v});
     
 
@@ -115,7 +113,7 @@ class  Welcome extends React.Component{
                 return <DisplayServiceProviders Account = {this.state.currentAccount}  Contract={this.state.contract}/>}}
 
         else{
-            return <h1>Hello service provider</h1>}}
+            return <Servp Account={this.state.currentAccount}  Contract={this.state.contract}/>}}
     else{
         return <RegisterScreen Account ={ this.state.currentAccount}  Contract = { this.state.contract} />}
 
