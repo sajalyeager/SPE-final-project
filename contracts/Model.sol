@@ -1,5 +1,4 @@
-
-//SPDX-License-Identifier: GPL-3.
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.7.0 <0.9.0;
 
 
@@ -36,32 +35,33 @@ contract Model {
         serviceProviderCount++;
         x = payable(0x5D2Cf9B829EA3D1D428AeE131909d2b63921eeaC);
         sp_Addresses.push(x);
-        ServiceProviders[x] = Service_Provider(serviceProviderCount,x,"Dada Dungeon","Lahore",sp2, 'emaiol','obofddsfa',1200000000, 1,true);
+        ServiceProviders[x] = Service_Provider(serviceProviderCount,x,"Sajal Singh","Bangalore",sp2, 'sajal.singh@outlook.com','+917579245939',1200000000, 1,true);
 
         serviceProviderCount++;
         x = payable(0x0f341A3FFD5af4F2112a201f109a482445fb97AE);
         sp_Addresses.push(x);
-        ServiceProviders[x] = Service_Provider(serviceProviderCount,x,"Dada Dungeon","Lahore",sp2, 'emaiol','obofddsfa',1200000000, 2,true);
+        ServiceProviders[x] = Service_Provider(serviceProviderCount,x,"Dada Singh","Bangalore",sp2, 'dada.singh@outlook.in','+919687545667',1200000000, 2,true);
 
         serviceProviderCount++;
         x = payable(0x110A50271a65EE265a4b4457aC412C76c9791678);
         sp_Addresses.push(x);
-        ServiceProviders[x] = Service_Provider(serviceProviderCount,x,"Dada Dungeon","Lahore",sp2, 'emaiol','obofddsfa',1200000000, 2,true);
+        ServiceProviders[x] = Service_Provider(serviceProviderCount,x,"Saurabh Singh","Bangalore",sp2, 'saurabh@outlook.com','+918909524009',1200000000, 2,true);
 
         serviceProviderCount++;
         x = payable(0xD3B7f2A8e0EDa1b2C6a0B49c6C79Ca9a3996C2AA);
         sp_Addresses.push(x);
-        ServiceProviders[x] = Service_Provider(serviceProviderCount,x,"Dada Dungeon","Lahore",sp2, 'emaiol','obofddsfa',1200000000, 2,true);
+        ServiceProviders[x] = Service_Provider(serviceProviderCount,x,"Anjan Shetty","Bangalore",sp2, 'anjan@iiitb.org.in','+919411107360',1200000000, 2,true);
 
 
         serviceProviderCount++;
         x = payable(0xd39cD70F514a0814c2Fc59350e11AA0EbA2b8CE8);
         sp_Addresses.push(x);
-        ServiceProviders[x] = Service_Provider(serviceProviderCount,x,"Dada Dungeon","Lahore",sp2, 'emaiol','obofddsfa',1200000000, 2,true);
+        ServiceProviders[x] = Service_Provider(serviceProviderCount,x,"Dada Dungeon","Bangalore",sp2, 'emaiol','obofddsfa',1200000000, 2,true);
 
 
 
     }
+// structure for Users
     // structure for Users
     struct User {
         uint id;
@@ -75,7 +75,7 @@ contract Model {
         bool serv;
         bool ongiong_service;
         bool messagealert;
-    
+
     }
 
 
@@ -112,9 +112,9 @@ contract Model {
         usersId++;
         address payable Address = payable(msg.sender);
         address payable sp = payable(0);
-         bool serv=false;
-         bool ongiong_service=false;
-         bool messagealert=false;
+        bool serv=false;
+        bool ongiong_service=false;
+        bool messagealert=false;
         user_Addresses.push(Address);
         Users[Address] = User(usersId, Address, home_address, sp, name, city, email, phone,serv,ongiong_service,messagealert);
     }
@@ -191,13 +191,13 @@ contract Model {
             Users[user].sp = sp;
             ServiceProviders[sp].service_seeker.push(user);
             Users[user].serv=true;
-            
+
 
         }
 
     }
 
-         function servicecompleted() public payable {
+    function servicecompleted() public payable {
         address payable user;
         user = payable(msg.sender);
         uint i = 0;
@@ -221,57 +221,61 @@ contract Model {
             ServiceProviders[Users[user].sp].service_seeker.pop();
             Users[user].serv=false;
             Users[user].ongiong_service=false;
-            
+
         }
 
     }
-    function service_choice(address payable user)public{
-    
+    function service_choice(address payable user)public payable{
+
         Users[user].ongiong_service=true;
-        
-        
+
+
     }
-    
-    
+
+
     function service_off() public payable{
         address payable sp;
         sp=payable(msg.sender);
         if(ServiceProviders[sp].status==true)
-             {
-                 ServiceProviders[sp].status=false;
-                 uint i=0;
-                 address payable user;
-                 for(;i<ServiceProviders[sp].service_seeker.length;)
-                    {
-                        
-                        user=ServiceProviders[sp].service_seeker[i];
-                        if(Users[user].ongiong_service==false)
-                            {   uint length=ServiceProviders[sp].service_seeker.length;
-                              Users[user].serv=false;
-                                Users[user].messagealert=true;
-                                 getBalance(user,sp);
-                                
-                                      ServiceProviders[sp].service_seeker[i]= ServiceProviders[sp].service_seeker[length-1] ;
-                                      ServiceProviders[sp].service_seeker[length-1] =user;
-                                      ServiceProviders[sp].service_seeker.pop();
-                            }
-                        else
-                            {
-                                i++;
-                            }
-                    }
-             }
-         else
-           ServiceProviders[sp].status=true;
+        {
+            ServiceProviders[sp].status=false;
+            uint i=0;
+            address payable user;
+            for(;i<ServiceProviders[sp].service_seeker.length;)
+            {
 
-        
-    }                
+                user=ServiceProviders[sp].service_seeker[i];
+                if(Users[user].ongiong_service==false)
+                {   uint length=ServiceProviders[sp].service_seeker.length;
+                    Users[user].serv=false;
+                    Users[user].messagealert=true;
+                    getBalance(user,sp);
 
-            function getBalance(address payable user,address payable sp) public payable{
-                user.transfer(address(this).balance-(address(this).balance-ServiceProviders[sp].charges));
+                    ServiceProviders[sp].service_seeker[i]= ServiceProviders[sp].service_seeker[length-1] ;
+                    ServiceProviders[sp].service_seeker[length-1] =user;
+                    ServiceProviders[sp].service_seeker.pop();
+                }
+                else
+                {
+                    i++;
+                }
             }
-            function eth() public  view returns (uint){
-                return address(this).balance;
-            }
-            
+        }
+        else
+            ServiceProviders[sp].status=true;
+
+
+    }
+
+    function getBalance(address payable user,address payable sp) public payable{
+        user.transfer(address(this).balance-(address(this).balance-ServiceProviders[sp].charges));
+    }
+    function eth() public  view returns (uint){
+        return address(this).balance;
+    }
+
+    function return_my_users(address payable sp) public view returns(address payable [] memory){
+        return ServiceProviders[sp].service_seeker;
+    }
+
 }
