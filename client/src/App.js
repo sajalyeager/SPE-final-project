@@ -5,14 +5,15 @@ import Web3 from 'web3'
 import ModelABI from './contracts/Model.json';
 import RegisterScreen from "./components/RegisterScreen";
 import DisplayServiceProviders from "./components/DisplayServiceProviders";
-import Pay from "./components/Payement";
-import Servp from "./components/providerscreen"
-
+import Payment from "./components/Payment";
+import Servp from "./components/providerscreen";
+import Wait  from "./components/wait";
 
 class  Welcome extends React.Component{
     componentWillMount() {
         this.loadWeb3().then(r => {console.log("Connected to metamask")});
-        this.connectBlockChainData().then(r =>{console.log("data from blockchain now in our program")});
+        this.connectBlockChainData().then(r =>{this.user()});
+
     }
 
     constructor(props) {
@@ -22,13 +23,15 @@ class  Welcome extends React.Component{
             existingUser :null,
             existingServiceProvider:null,
             serviceProvidersList :null,
-            sp: false
+            msg : false,
+            ong:false
+
         };
     }
 
     async getUserState (contract){
         let rvalue = false;
-         await this.state.contract.methods.userExist( this.state.currentAccount).call()
+         await  this.state.contract.methods.userExist( this.state.currentAccount).call()
           .then(function (result){
               rvalue = result;
           });
@@ -87,35 +90,44 @@ class  Welcome extends React.Component{
       window.alert("Please switch to Ganache Network!!")
     }
   }
-    async user()
-       { 
-             let v= false;
-             
-        await this.state.contract.methods.Users(this.state.currentAccount).call()
-        .then(function (result){
-            v = result[8];
-        });
-          this.setState({sp :v});
-    
 
-           
-        
-       }
+    async user()
+    {
+        let v= false;
+        let alert = false;
+         let s=false;
+        await this.state.contract.methods.Users(this.state.currentAccount).call()
+            .then(function(result){
+                v= result.serv;
+                alert = result.messagealert;
+                s=result.ongiong_service;
+                console.log(s);
+
+            });
+        this.setState({sp :v});
+        this.setState({msg:alert});
+        this.setState({ong:s})
+    }
 
   RegisterScreenLoader(x, y){
 
-    if( x === true || y === true){
+    if( x === true || y === true)
         if(x === true){
-             this.user();
-             if(this.state.sp=== true){
-               return <Pay contract= {this.state.contract} account ={this.state.currentAccount}/>}
-              else {
+            if(this.state.sp=== true){
+                if(this.state.msg === true){
+                    <h1> your requect was dinied</h1>
+                    window.alert("Service Provider Denied to service");
+                    return <DisplayServiceProviders Account = {this.state.currentAccount}  Contract={this.state.contract}/>
+                }
+                 else {if(this.state.ong==true){
+                        return <Payment contract= {this.state.contract} account ={this.state.currentAccount}/>}
+                      else{
+                     return <Wait/>}}}
+            else {
                 return <DisplayServiceProviders Account = {this.state.currentAccount}  Contract={this.state.contract}/>}}
-
-        else{
-            return <Servp Account={this.state.currentAccount}  Contract={this.state.contract}/>}}
-    else{
-        return <RegisterScreen Account ={ this.state.currentAccount}  Contract = { this.state.contract} />}
+        else return <Servp Account={this.state.currentAccount}  Contract={this.state.contract}/>
+    else
+        return <RegisterScreen Account ={ this.state.currentAccount}  Contract = { this.state.contract} />
 
   }
 
